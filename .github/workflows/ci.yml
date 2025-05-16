@@ -1,4 +1,7 @@
-name: CI Pipeline with File Push
+name: CI Pipeline with Push
+
+permissions:
+  contents: write  # ✅ This gives GitHub Actions permission to push changes
 
 on:
   push:
@@ -14,7 +17,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}  # Enables push access
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Set up Python
       uses: actions/setup-python@v2

@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI Pipeline with Push Back
 
 on:
   push:
@@ -13,6 +13,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        persist-credentials: false  # We'll use GITHUB_TOKEN manually
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -20,9 +22,17 @@ jobs:
         python-version: '3.9'
 
     - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
+      run: pip install -r requirements.txt
 
-    - name: Run script
+    - name: Run Python script
+      run: python main.py
+
+    - name: Commit and push processed file
       run: |
-        python main.py
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+        git add data/processed_dataset.csv
+        git commit -m "Add processed_dataset.csv from CI"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
